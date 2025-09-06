@@ -1,6 +1,7 @@
 # -------------------------
 # React / Node.js
 # -------------------------
+node/
 node_modules/
 dist/
 build/
