@@ -1,0 +1,13 @@
+# -------------------------
+# Java / Maven
+# -------------------------
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+.idea/
+*.log
+hs_err_pid*
+replay_pid*
