@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zero-apps-python"
+version = "0.1.0"
+description = "Python module for Zero Apps (AI/ML helpers, scripts, etc.)"
+authors = [
+    { name = "VR Labs", email = "team@vrlabs.com" }
+]
+dependencies = [
+    "requests>=2.32",
+    "openai>=1.0",
+    "pandas>=2.2",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
