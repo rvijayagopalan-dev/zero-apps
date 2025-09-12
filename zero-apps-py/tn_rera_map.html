@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Google Maps - gmplot</title>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyC1uFfY0pZuwXybi1ZvnvKNkDuVMIqAXpU"></script>
+<script type="text/javascript">
+    function initialize() {
+        var map = new google.maps.Map(document.getElementById("map_canvas"), {
+            zoom: 11,
+            center: new google.maps.LatLng(11.127123, 78.656894)
+        });
+
+        var marker_icon_FF0000 = {
+            url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAiCAYAAACwaJKDAAAABmJLR0QA/wD/AP+gvaeTAAACBklEQVRIia3VzUtUURgH4GdG/AiyZZShtWgXUbSIFtGqRYtqWRLhXyBYf0K6MaJQ2gRtayHtijYpleHKSCgIcRHoIiOSKEzLKea0OOeqTfPlzPzg5Qwz9zz3nXPvPTeneo7gNA4gjyI+Ygbva8z9L2cxi9BHOE+4msY+gliz6biayWE0R7GfMEcoEkJJzRH6CbnY+WiaVxEc6yY8KQOVq8eE7tj1WCV4qIswUyeY1QyhK8JDpWAP1m7vEMzqTkTXkrOZkYOEQoNogXAowiPE2wQuDqC9nktZJu0YSE72XRs2phrsMqup2OkG2vLpRB19DXaZJc3vQHv294Um0e3z8yigsNQkmuYXUMie5/npJtE0fz55YLiXsNHELdUbV2B4+4n2Y/Vmg+itCK4m558MdhBe7hCcJnRGdLDS0ox3E17XCb4h7IngeLX1zuFhD2G5BriytY4Tqmx9WXbh3Tnl99KsLkdwAbtrgVmO4/eDCuCkzd3/TL1glru9hF8lYJFwMoKPdgrCXqzfL0GfR7CIo42gcO9YCXopolONgnAC4W0Cv9l8dVxpBoWFGwmdiOC6Glc8X+3HlKeT6cOzOLzAjyaaBBc602ZzOHZ6vVkQ9kl7Qi6ip1qBwpdrEfwjPnFVU8+awuKrOC7hZ6vQlQ9baM3Ui379HsfVVqKf07jcSvRTGhfrOfgvIP3ECS77BDoAAAAASUVORK5CYII=",
+            labelOrigin: new google.maps.Point(10, 11)
+        };
+
+        new google.maps.Marker({
+            position: new google.maps.LatLng(11.127123, 78.656894),
+            title: "TN/20/Building/Offline/0001/2025 dated 14/05/2025",
+            icon: marker_icon_FF0000,
+            map: map
+        });
+
+    }
+</script>
+</head>
+<body style="margin:0px; padding:0px;" onload="initialize()">
+    <div id="map_canvas" style="width: 100%; height: 100%;" />
+
+<script>
+function addInfoWindows(map){
+  var markers = [{lat:11.1271225, lng:78.6568942, title:'TN/20/Building/Offline/0001/2025 dated 14/05/2025', info:'TN/20/Building/Offline/0001/2025 dated 14/05/2025<br/>Approval Details'}];
+  var infowindow = new google.maps.InfoWindow();
+  for (var i=0; i<markers.length; i++) {
+    (function(m) {
+      var marker = new google.maps.Marker({
+        position: {lat: m.lat, lng: m.lng},
+        map: map,
+        title: m.title
+      });
+      google.maps.event.addListener(marker, 'click', (function(markerCopy, mCopy) {
+          return function() {
+              infowindow.setContent(mCopy.info);
+              infowindow.open(map, markerCopy);
+          }
+      })(marker, m));
+    })(markers[i]);
+  }
+}
+/* Wait for the Google map to load and then call addInfoWindows */
+if (typeof google !== "undefined" && google.maps && google.maps.event) {
+  google.maps.event.addListenerOnce(window, 'load', function() {
+    // find the map object created by gmplot (it uses window.map_0)
+    if (window.map_0) {
+      addInfoWindows(window.map_0);
+    }
+  });
+}
+</script>
+
+</body>
+</html>

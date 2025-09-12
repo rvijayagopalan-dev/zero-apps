@@ -1,3 +1,23 @@
 requests>=2.32
 openai>=1.0
 pandas>=2.2
+
+#Summarizer-ai
+
+fastapi
+uvicorn
+yt_dlp
+youtube-transcript-api
+openai
+whisperx==3.1.1 # optional, GPU recommended
+python-dotenv
+trafilatura
+readability-lxml
+pymupdf
+redis
+rq
+psycopg[binary]
+python-pptx
+graphviz
+pgvector
+
