@@ -31,7 +31,7 @@
 
 <script>
 function addInfoWindows(map){
-  var markers = [{lat:11.1271225, lng:78.6568942, title:'TN/20/Building/Offline/0001/2025 dated 14/05/2025', info:'TN/20/Building/Offline/0001/2025 dated 14/05/2025<br/>Approval Details'}];
+  var markers = [{lat:11.1271225, lng:78.6568942, title:'TN/20/Building/Offline/0001/2025 dated 14/05/2025', info:"<b>Builder:</b> 1) M/s. St.Angelo's VNCT Ventures LLP and 2) Thiru. Malayalingam, No.2, Sun Centre, First Floor, Tank Bund Road, Nungambakkam, Chennai – 600034.<br><b>Project:</b> TN/20/Building/Offline/0001/2025 dated 14/05/2025<br><b>Price:</b> Project Name: “Garden Villas” - Construction of Registration of Residential Building’s with 64 Individual Units in the land comprised in S.Nos.220/2A1, 220/6, 220/5A, 221/1A of Kodikulam IInd Bit Village, Madurai North Taluk, Madurai District.<br><b>Location:</b> Approval Details"}];
   var infowindow = new google.maps.InfoWindow();
   for (var i=0; i<markers.length; i++) {
     (function(m) {
@@ -40,19 +40,23 @@ function addInfoWindows(map){
         map: map,
         title: m.title
       });
-      google.maps.event.addListener(marker, 'click', (function(markerCopy, mCopy) {
-          return function() {
-              infowindow.setContent(mCopy.info);
-              infowindow.open(map, markerCopy);
-          }
-      })(marker, m));
+      google.maps.event.addListener(marker, 'mouseover', function() {
+        infowindow.setContent(m.info);
+        infowindow.open(map, marker);
+      });
+      google.maps.event.addListener(marker, 'mouseout', function() {
+        infowindow.close();
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(m.info);
+        infowindow.open(map, marker);
+      });
     })(markers[i]);
   }
 }
-/* Wait for the Google map to load and then call addInfoWindows */
+
 if (typeof google !== "undefined" && google.maps && google.maps.event) {
   google.maps.event.addListenerOnce(window, 'load', function() {
-    // find the map object created by gmplot (it uses window.map_0)
     if (window.map_0) {
       addInfoWindows(window.map_0);
     }

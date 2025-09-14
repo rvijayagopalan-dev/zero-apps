@@ -174,10 +174,10 @@ def geocode_address(address, conn, google_api_key=None, sleep_between=1.0):
 # Map rendering (gmplot)
 # -----------------------
 def create_gmap_html(df, output_html="tn_rera_map.html", google_api_key=None):
-    # center map on mean lat/lng
+    # Center map on mean lat/lng
     mean_lat = df["lat"].mean()
     mean_lng = df["lng"].mean()
-    # gmplot takes API key in the HTML script include for Google Maps JS
+
     gmap = gmplot.GoogleMapPlotter(mean_lat, mean_lng, 11, apikey=google_api_key)
 
     # Add markers
@@ -194,30 +194,28 @@ def create_gmap_html(df, output_html="tn_rera_map.html", google_api_key=None):
     # Draw initial HTML
     gmap.draw(output_html)
 
-    """
-    # add markers
-    for _, row in df.iterrows():
-        lat, lng = row["lat"], row["lng"]
-        info = f"{row['project']}<br/>{row['address']}<br/><small>Source: {row['source_url']}</small>"
-        # gmplot has a marker function, and we can add info windows by adding a little JS at the end.
-        gmap.marker(lat, lng, title=row['project'])
-    # draw
-    gmap.draw(output_html)
-    """
-    # Insert simple JS for clickable info windows (improves user experience).
-    # gmplot's simple draw doesn't automatically add info windows; we'll append JS to the HTML.
+    # Enhance with JS popups
     with open(output_html, "r", encoding="utf8") as f:
         html = f.read()
-    # Build simple markers array JS
+
     markers_js = []
-    for i, row in df.iterrows():
+    for _, row in df.iterrows():
+        info_html = (
+            f"<b>Builder:</b> {row['builder']}<br>"
+            f"<b>Project:</b> {row['project']}<br>"
+            f"<b>Price:</b> {row['price']}<br>"
+            f"<b>Location:</b> {row['address']}"
+        )
         markers_js.append(
             "{{lat:{lat}, lng:{lng}, title:{title!r}, info:{info!r}}}".format(
                 lat=row["lat"], lng=row["lng"],
-                title=row["project"], info=(row["project"] + "<br/>" + row["address"])
+                title=row["project"],
+                info=info_html
             )
         )
+
     markers_array = "[" + ",\n".join(markers_js) + "]"
+
     extra_js = f"""
 <script>
 function addInfoWindows(map){{
@@ -230,19 +228,23 @@ function addInfoWindows(map){{
         map: map,
         title: m.title
       }});
-      google.maps.event.addListener(marker, 'click', (function(markerCopy, mCopy) {{
-          return function() {{
-              infowindow.setContent(mCopy.info);
-              infowindow.open(map, markerCopy);
-          }}
-      }})(marker, m));
+      google.maps.event.addListener(marker, 'mouseover', function() {{
+        infowindow.setContent(m.info);
+        infowindow.open(map, marker);
+      }});
+      google.maps.event.addListener(marker, 'mouseout', function() {{
+        infowindow.close();
+      }});
+      google.maps.event.addListener(marker, 'click', function() {{
+        infowindow.setContent(m.info);
+        infowindow.open(map, marker);
+      }});
     }})(markers[i]);
   }}
 }}
-/* Wait for the Google map to load and then call addInfoWindows */
+
 if (typeof google !== "undefined" && google.maps && google.maps.event) {{
   google.maps.event.addListenerOnce(window, 'load', function() {{
-    // find the map object created by gmplot (it uses window.map_0)
     if (window.map_0) {{
       addInfoWindows(window.map_0);
     }}
@@ -250,7 +252,6 @@ if (typeof google !== "undefined" && google.maps && google.maps.event) {{
 }}
 </script>
 """
-    # append before </body>
     html = html.replace("</body>", extra_js + "\n</body>")
     with open(output_html, "w", encoding="utf8") as f:
         f.write(html)
